@@ -26,12 +26,12 @@ ResponseDayCandleDtoV1Data _$ResponseDayCandleDtoV1DataFromJson(
     Map<String, dynamic> json) {
   return ResponseDayCandleDtoV1Data(
     market: json['market'] as String?,
-    candleDateTimeKst: json['candleDateTimeKst'] as String?,
-    openingPrice: (json['openingPrice'] as num?)?.toDouble(),
-    highPrice: (json['highPrice'] as num?)?.toDouble(),
-    lowPrice: (json['lowPrice'] as num?)?.toDouble(),
-    tradePrice: (json['tradePrice'] as num?)?.toDouble(),
-    candleAccTradeVolume: (json['candleAccTradeVolume'] as num?)?.toDouble(),
+    candleDateTimeKst: json['candle_date_time_kst'] as String?,
+    openingPrice: (json['opening_price'] as num?)?.toDouble(),
+    highPrice: (json['high_price'] as num?)?.toDouble(),
+    lowPrice: (json['low_price'] as num?)?.toDouble(),
+    tradePrice: (json['trade_price'] as num?)?.toDouble(),
+    candleAccTradeVolume: (json['candle_acc_trade_volume'] as num?)?.toDouble(),
   );
 }
 
@@ -39,10 +39,10 @@ Map<String, dynamic> _$ResponseDayCandleDtoV1DataToJson(
         ResponseDayCandleDtoV1Data instance) =>
     <String, dynamic>{
       'market': instance.market,
-      'candleDateTimeKst': instance.candleDateTimeKst,
-      'openingPrice': instance.openingPrice,
-      'highPrice': instance.highPrice,
-      'lowPrice': instance.lowPrice,
-      'tradePrice': instance.tradePrice,
-      'candleAccTradeVolume': instance.candleAccTradeVolume,
+      'candle_date_time_kst': instance.candleDateTimeKst,
+      'opening_price': instance.openingPrice,
+      'high_price': instance.highPrice,
+      'low_price': instance.lowPrice,
+      'trade_price': instance.tradePrice,
+      'candle_acc_trade_volume': instance.candleAccTradeVolume,
     };

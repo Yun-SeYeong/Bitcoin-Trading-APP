@@ -13,7 +13,7 @@ class ResponseDayCandleDtoV1 {
   Map<String, dynamic> toJson() => _$ResponseDayCandleDtoV1ToJson(this);
 }
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class ResponseDayCandleDtoV1Data {
   String? market;
   String? candleDateTimeKst;

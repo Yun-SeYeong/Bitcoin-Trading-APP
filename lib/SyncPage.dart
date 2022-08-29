@@ -2,6 +2,7 @@ import 'package:bitcoin_trading_app/bloc/CandleBloc.dart';
 import 'package:bitcoin_trading_app/bloc/CandleEvent.dart';
 import 'package:bitcoin_trading_app/bloc/CandleState.dart';
 import 'package:bitcoin_trading_app/dto/DayCandleDto.dart';
+import 'package:bitcoin_trading_app/dto/MarketCodeDto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -23,11 +24,14 @@ class _SyncPage extends State<SyncPage> {
   final _trackballBehavior = TrackballBehavior(enable: true);
   final _typeList = ['일봉', '분봉'];
   String _selectedValue = '일봉';
+  List<MarketCodeDto> _marketList = [];
+  String _selectedMarket = 'KRW-BTC';
   String _chartTitle = '일봉';
 
   @override
   void initState() {
     BlocProvider.of<CandleBloc>(context).add(LoadDayCandleEvent("KRW-BTC", 50));
+    BlocProvider.of<CandleBloc>(context).add(LoadMarketCodeEvent());
     super.initState();
   }
 
@@ -130,15 +134,23 @@ class _SyncPage extends State<SyncPage> {
               ),
             ),
             /**
-             * Market Input Field
+             * Market 선택
              */
             Container(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-              child: TextField(
-                controller: _marketEditingController,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), hintText: 'Market'),
+              const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              child: Row(
+                children: [
+                  DropdownButton(
+                    value: _selectedMarket,
+                    items: _marketList.map((e) => DropdownMenuItem(value: e.market, child: Text(e.market))).toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _selectedMarket = value ?? 'KRW-BTC';
+                      });
+                    },
+                  ),
+                ],
               ),
             ),
             /**
@@ -187,10 +199,13 @@ class _SyncPage extends State<SyncPage> {
               },
               buildWhen: (previous, current) {
                 if (current is DayCandleLoaded) {
-                  print('data loaded');
                   setState(() {
                     _candles = current.candles;
                     marketTitle = current.candles.first.market;
+                  });
+                } else if (current is MarketCodeLoaded) {
+                  setState(() {
+                    _marketList = current.marketCodes;
                   });
                 }
                 return false;
