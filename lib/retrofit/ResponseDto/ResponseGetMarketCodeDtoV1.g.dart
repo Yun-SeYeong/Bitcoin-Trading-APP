@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ResponseMarketCodeDtoV1.dart';
+part of 'ResponseGetMarketCodeDtoV1.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

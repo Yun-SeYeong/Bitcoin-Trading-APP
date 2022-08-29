@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'ResponseDayCandleDtoV1.g.dart';
+part 'ResponseGetDayCandleDtoV1.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class ResponseDayCandleDtoV1 {

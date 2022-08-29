@@ -1,6 +1,7 @@
 import 'package:bitcoin_trading_app/bloc/CandleBloc.dart';
 import 'package:bitcoin_trading_app/bloc/CandleEvent.dart';
 import 'package:bitcoin_trading_app/bloc/CandleState.dart';
+import 'package:bitcoin_trading_app/dto/CandleDto.dart';
 import 'package:bitcoin_trading_app/dto/DayCandleDto.dart';
 import 'package:bitcoin_trading_app/dto/MarketCodeDto.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,9 @@ class SyncPage extends StatefulWidget {
 }
 
 class _SyncPage extends State<SyncPage> {
-  List<DayCandleDto> _candles = [];
+  List<CandleDto> _candles = [];
   String marketTitle = "...";
   final _unitEditingController = TextEditingController();
-  final _marketEditingController = TextEditingController();
   final _countEditingController = TextEditingController();
   final _trackballBehavior = TrackballBehavior(enable: true);
   final _typeList = ['일봉', '분봉'];
@@ -63,11 +63,7 @@ class _SyncPage extends State<SyncPage> {
                 enableAxisAnimation: true,
                 primaryXAxis: DateTimeAxis(
                   title: AxisTitle(
-                    text: _chartTitle,
-                    textStyle: TextStyle(
-                      fontSize: 12
-                    )
-                  ),
+                      text: _chartTitle, textStyle: TextStyle(fontSize: 12)),
                 ),
                 primaryYAxis: NumericAxis(
                   numberFormat: NumberFormat.compactCurrency(symbol: ''),
@@ -80,8 +76,8 @@ class _SyncPage extends State<SyncPage> {
                     opposedPosition: true,
                   )
                 ],
-                series: <ChartSeries<DayCandleDto, DateTime>>[
-                  CandleSeries<DayCandleDto, DateTime>(
+                series: <ChartSeries<CandleDto, DateTime>>[
+                  CandleSeries<CandleDto, DateTime>(
                     dataSource: _candles,
                     xValueMapper: (data, _) => data.candleDateTimeKst,
                     lowValueMapper: (data, _) => data.lowPrice,
@@ -89,7 +85,7 @@ class _SyncPage extends State<SyncPage> {
                     openValueMapper: (data, _) => data.openPrice,
                     closeValueMapper: (data, _) => data.tradePrice,
                   ),
-                  ColumnSeries<DayCandleDto, DateTime>(
+                  ColumnSeries<CandleDto, DateTime>(
                     yAxisName: 'Y-Axis',
                     dataSource: _candles,
                     xValueMapper: (data, _) => data.candleDateTimeKst,
@@ -108,7 +104,9 @@ class _SyncPage extends State<SyncPage> {
                 children: [
                   DropdownButton(
                     value: _selectedValue,
-                    items: _typeList.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                    items: _typeList
+                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                        .toList(),
                     onChanged: (String? value) {
                       setState(() {
                         _selectedValue = value ?? _typeList[0];
@@ -125,7 +123,7 @@ class _SyncPage extends State<SyncPage> {
               visible: _selectedValue == '분봉',
               child: Container(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                 child: TextField(
                   controller: _unitEditingController,
                   decoration: InputDecoration(
@@ -138,12 +136,15 @@ class _SyncPage extends State<SyncPage> {
              */
             Container(
               padding:
-              const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               child: Row(
                 children: [
                   DropdownButton(
                     value: _selectedMarket,
-                    items: _marketList.map((e) => DropdownMenuItem(value: e.market, child: Text(e.market))).toList(),
+                    items: _marketList
+                        .map((e) => DropdownMenuItem(
+                            value: e.market, child: Text(e.market)))
+                        .toList(),
                     onChanged: (String? value) {
                       setState(() {
                         _selectedMarket = value ?? 'KRW-BTC';
@@ -174,15 +175,24 @@ class _SyncPage extends State<SyncPage> {
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(backgroundColor: Colors.black),
                 onPressed: () {
-                  final market = _marketEditingController.text.isNotEmpty
-                      ? _marketEditingController.text
+                  final unit = int.parse(_unitEditingController.text.isNotEmpty
+                      ? _unitEditingController.text
+                      : '3');
+                  final market = _selectedMarket.isNotEmpty
+                      ? _selectedMarket
                       : 'KRW-BTC';
                   final count = int.parse(
                       _countEditingController.text.isNotEmpty
                           ? _countEditingController.text
                           : '0');
-                  BlocProvider.of<CandleBloc>(context)
-                      .add(LoadDayCandleEvent(market, count));
+
+                  if (_selectedValue == '일봉') {
+                    BlocProvider.of<CandleBloc>(context)
+                        .add(LoadDayCandleEvent(market, count));
+                  } else {
+                    BlocProvider.of<CandleBloc>(context)
+                        .add(LoadMinuteCandleEvent(unit, market, count));
+                  }
                 },
                 child: Text(
                   '조회',
@@ -200,8 +210,37 @@ class _SyncPage extends State<SyncPage> {
               buildWhen: (previous, current) {
                 if (current is DayCandleLoaded) {
                   setState(() {
-                    _candles = current.candles;
-                    marketTitle = current.candles.first.market;
+                    _candles = current.candles
+                        .map((e) => CandleDto(
+                            e.candleDateTimeKst,
+                            e.openPrice,
+                            e.highPrice,
+                            e.lowPrice,
+                            e.tradePrice,
+                            e.volume))
+                        .toList();
+                    if (current.candles.length > 0) {
+                      marketTitle = current.candles.first.market;
+                    } else {
+                      marketTitle = '...';
+                    }
+                  });
+                } else if (current is MinuteCandleLoaded) {
+                  setState(() {
+                    _candles = current.candles
+                        .map((e) => CandleDto(
+                            e.candleDateTimeKst,
+                            e.openPrice,
+                            e.highPrice,
+                            e.lowPrice,
+                            e.tradePrice,
+                            e.volume))
+                        .toList();
+                    if (current.candles.length > 0) {
+                      marketTitle = current.candles.first.market;
+                    } else {
+                      marketTitle = '...';
+                    }
                   });
                 } else if (current is MarketCodeLoaded) {
                   setState(() {

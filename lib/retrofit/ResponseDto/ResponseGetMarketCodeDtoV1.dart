@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'ResponseMarketCodeDtoV1.g.dart';
+part 'ResponseGetMarketCodeDtoV1.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class ResponseMarketCodeDtoV1 {

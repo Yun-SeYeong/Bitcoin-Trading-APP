@@ -34,6 +34,25 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<ResponseGetMinuteCandleDtoV1> getMinuteCandleV1(
+      unit, market, count) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'market': market,
+      r'count': count
+    };
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ResponseGetMinuteCandleDtoV1>(
+            Options(method: 'GET', headers: <String, dynamic>{}, extra: _extra)
+                .compose(_dio.options, '/candles/minute-candle/v1/$unit',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ResponseGetMinuteCandleDtoV1.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<ResponseMarketCodeDtoV1> getMarketCodeV1() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

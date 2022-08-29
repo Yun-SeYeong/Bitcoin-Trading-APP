@@ -1,30 +1,30 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ResponseDayCandleDtoV1.dart';
+part of 'ResponseGetMinuteCandleDtoV1.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ResponseDayCandleDtoV1 _$ResponseDayCandleDtoV1FromJson(
+ResponseGetMinuteCandleDtoV1 _$ResponseGetMinuteCandleDtoV1FromJson(
     Map<String, dynamic> json) {
-  return ResponseDayCandleDtoV1(
+  return ResponseGetMinuteCandleDtoV1(
     (json['data'] as List<dynamic>)
-        .map((e) =>
-            ResponseDayCandleDtoV1Data.fromJson(e as Map<String, dynamic>))
+        .map((e) => ResponseGetMinuteCandleDtoV1Data.fromJson(
+            e as Map<String, dynamic>))
         .toList(),
   );
 }
 
-Map<String, dynamic> _$ResponseDayCandleDtoV1ToJson(
-        ResponseDayCandleDtoV1 instance) =>
+Map<String, dynamic> _$ResponseGetMinuteCandleDtoV1ToJson(
+        ResponseGetMinuteCandleDtoV1 instance) =>
     <String, dynamic>{
       'data': instance.data.map((e) => e.toJson()).toList(),
     };
 
-ResponseDayCandleDtoV1Data _$ResponseDayCandleDtoV1DataFromJson(
+ResponseGetMinuteCandleDtoV1Data _$ResponseGetMinuteCandleDtoV1DataFromJson(
     Map<String, dynamic> json) {
-  return ResponseDayCandleDtoV1Data(
+  return ResponseGetMinuteCandleDtoV1Data(
     market: json['market'] as String?,
     candleDateTimeKst: json['candle_date_time_kst'] as String?,
     openingPrice: (json['opening_price'] as num?)?.toDouble(),
@@ -35,8 +35,8 @@ ResponseDayCandleDtoV1Data _$ResponseDayCandleDtoV1DataFromJson(
   );
 }
 
-Map<String, dynamic> _$ResponseDayCandleDtoV1DataToJson(
-        ResponseDayCandleDtoV1Data instance) =>
+Map<String, dynamic> _$ResponseGetMinuteCandleDtoV1DataToJson(
+        ResponseGetMinuteCandleDtoV1Data instance) =>
     <String, dynamic>{
       'market': instance.market,
       'candle_date_time_kst': instance.candleDateTimeKst,

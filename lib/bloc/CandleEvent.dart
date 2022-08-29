@@ -17,3 +17,15 @@ class LoadMarketCodeEvent extends CandleEvent {
   List<Object?> get props => [];
 
 }
+
+class LoadMinuteCandleEvent extends CandleEvent {
+  final int unit;
+  final String market;
+  final int count;
+
+  LoadMinuteCandleEvent(this.unit, this.market, this.count);
+
+  @override
+  List<Object?> get props => [];
+
+}
