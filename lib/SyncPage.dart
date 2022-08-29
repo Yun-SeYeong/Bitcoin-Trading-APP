@@ -27,6 +27,7 @@ class _SyncPage extends State<SyncPage> {
   List<MarketCodeDto> _marketList = [];
   String _selectedMarket = 'KRW-BTC';
   String _chartTitle = '일봉';
+  double _syncPercent = 0;
 
   @override
   void initState() {
@@ -93,6 +94,20 @@ class _SyncPage extends State<SyncPage> {
                   ),
                 ],
               ),
+            ),
+            /**
+             * 연동 정도 조회
+             */
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Sync'),
+                Text('${_syncPercent*100}%'),
+              ],
+            ),
+            SizedBox(height: 8),
+            LinearProgressIndicator(
+              value: _syncPercent,
             ),
             /**
              * 분봉, 일봉 선택
@@ -178,9 +193,8 @@ class _SyncPage extends State<SyncPage> {
                   final unit = int.parse(_unitEditingController.text.isNotEmpty
                       ? _unitEditingController.text
                       : '3');
-                  final market = _selectedMarket.isNotEmpty
-                      ? _selectedMarket
-                      : 'KRW-BTC';
+                  final market =
+                      _selectedMarket.isNotEmpty ? _selectedMarket : 'KRW-BTC';
                   final count = int.parse(
                       _countEditingController.text.isNotEmpty
                           ? _countEditingController.text
@@ -193,6 +207,7 @@ class _SyncPage extends State<SyncPage> {
                     BlocProvider.of<CandleBloc>(context)
                         .add(LoadMinuteCandleEvent(unit, market, count));
                   }
+                  _syncPercent = 1 / count;
                 },
                 child: Text(
                   '조회',
@@ -211,15 +226,11 @@ class _SyncPage extends State<SyncPage> {
                 if (current is DayCandleLoaded) {
                   setState(() {
                     _candles = current.candles
-                        .map((e) => CandleDto(
-                            e.candleDateTimeKst,
-                            e.openPrice,
-                            e.highPrice,
-                            e.lowPrice,
-                            e.tradePrice,
-                            e.volume))
+                        .map((e) => CandleDto(e.candleDateTimeKst, e.openPrice,
+                            e.highPrice, e.lowPrice, e.tradePrice, e.volume))
                         .toList();
                     if (current.candles.length > 0) {
+                      _syncPercent *= current.candles.length;
                       marketTitle = current.candles.first.market;
                     } else {
                       marketTitle = '...';
@@ -228,15 +239,11 @@ class _SyncPage extends State<SyncPage> {
                 } else if (current is MinuteCandleLoaded) {
                   setState(() {
                     _candles = current.candles
-                        .map((e) => CandleDto(
-                            e.candleDateTimeKst,
-                            e.openPrice,
-                            e.highPrice,
-                            e.lowPrice,
-                            e.tradePrice,
-                            e.volume))
+                        .map((e) => CandleDto(e.candleDateTimeKst, e.openPrice,
+                            e.highPrice, e.lowPrice, e.tradePrice, e.volume))
                         .toList();
                     if (current.candles.length > 0) {
+                      _syncPercent *= current.candles.length;
                       marketTitle = current.candles.first.market;
                     } else {
                       marketTitle = '...';
