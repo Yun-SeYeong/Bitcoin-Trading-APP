@@ -20,7 +20,7 @@ class _SyncPage extends State<SyncPage> {
   List<CandleDto> _candles = [];
   String marketTitle = "...";
   final _unitEditingController = TextEditingController();
-  final _countEditingController = TextEditingController();
+  final _countEditingController = TextEditingController(text: '50');
   final _trackballBehavior = TrackballBehavior(enable: true);
   final _typeList = ['일봉', '분봉'];
   String _selectedValue = '일봉';
@@ -33,6 +33,7 @@ class _SyncPage extends State<SyncPage> {
   void initState() {
     BlocProvider.of<CandleBloc>(context).add(LoadDayCandleEvent("KRW-BTC", 50));
     BlocProvider.of<CandleBloc>(context).add(LoadMarketCodeEvent());
+    _syncPercent = 1/int.parse(_countEditingController.text);
     super.initState();
   }
 
@@ -98,16 +99,22 @@ class _SyncPage extends State<SyncPage> {
             /**
              * 연동 정도 조회
              */
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Sync'),
-                Text('${_syncPercent*100}%'),
-              ],
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Sync'),
+                  Text('${_syncPercent*100}%'),
+                ],
+              ),
             ),
             SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: _syncPercent,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: LinearProgressIndicator(
+                value: _syncPercent,
+              ),
             ),
             /**
              * 분봉, 일봉 선택
