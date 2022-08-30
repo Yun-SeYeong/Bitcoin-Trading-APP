@@ -8,7 +8,7 @@ part of 'RestClient.dart';
 
 class _RestClient implements RestClient {
   _RestClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'http://10.0.2.2:8080';
+    baseUrl ??= 'http://localhost:8080';
   }
 
   final Dio _dio;
@@ -49,6 +49,26 @@ class _RestClient implements RestClient {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ResponseGetMinuteCandleDtoV1.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ResponsePostSyncDayCandleDtoV1> postSyncDayCandleV1(
+      market, to, count) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'market': market,
+      r'to': to,
+      r'count': count
+    };
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ResponsePostSyncDayCandleDtoV1>(
+            Options(method: 'POST', headers: <String, dynamic>{}, extra: _extra)
+                .compose(_dio.options, '/sync/day-candle/v1',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ResponsePostSyncDayCandleDtoV1.fromJson(_result.data!);
     return value;
   }
 

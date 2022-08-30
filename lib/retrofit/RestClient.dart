@@ -2,12 +2,13 @@
 import 'package:bitcoin_trading_app/retrofit/ResponseDto/ResponseGetDayCandleDtoV1.dart';
 import 'package:bitcoin_trading_app/retrofit/ResponseDto/ResponseGetMarketCodeDtoV1.dart';
 import 'package:bitcoin_trading_app/retrofit/ResponseDto/ResponseGetMinuteCandleDtoV1.dart';
+import 'package:bitcoin_trading_app/retrofit/ResponseDto/ResponsePostSyncDayCandleDtoV1.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'RestClient.g.dart';
 
-@RestApi(baseUrl: "http://10.0.2.2:8080")
+@RestApi(baseUrl: "http://localhost:8080")
 abstract class RestClient {
   factory RestClient(Dio dio, {String baseUrl}) = _RestClient;
 
@@ -16,6 +17,9 @@ abstract class RestClient {
 
   @GET("/candles/minute-candle/v1/{unit}")
   Future<ResponseGetMinuteCandleDtoV1> getMinuteCandleV1(@Path('unit') int unit, @Query('market') String market, @Query('count') int count);
+
+  @POST("/sync/day-candle/v1")
+  Future<ResponsePostSyncDayCandleDtoV1> postSyncDayCandleV1(@Query('market') String market,@Query('to') String to, @Query('count') int count);
 
   @GET("/candles/market-code/v1")
   Future<ResponseMarketCodeDtoV1> getMarketCodeV1();

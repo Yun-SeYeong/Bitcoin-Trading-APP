@@ -33,7 +33,6 @@ class _SyncPage extends State<SyncPage> {
   void initState() {
     BlocProvider.of<CandleBloc>(context).add(LoadDayCandleEvent("KRW-BTC", 50));
     BlocProvider.of<CandleBloc>(context).add(LoadMarketCodeEvent());
-    _syncPercent = 1/int.parse(_countEditingController.text);
     super.initState();
   }
 
@@ -105,7 +104,7 @@ class _SyncPage extends State<SyncPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Sync'),
-                  Text('${_syncPercent*100}%'),
+                  Text('${_syncPercent * 100}%'),
                 ],
               ),
             ),
@@ -116,12 +115,45 @@ class _SyncPage extends State<SyncPage> {
                 value: _syncPercent,
               ),
             ),
+            Visibility(
+              visible: _syncPercent < 1.0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {
+                        final unit = int.parse(
+                            _unitEditingController.text.isNotEmpty
+                                ? _unitEditingController.text
+                                : '3');
+                        final market = _selectedMarket.isNotEmpty
+                            ? _selectedMarket
+                            : 'KRW-BTC';
+                        final count = int.parse(
+                            _countEditingController.text.isNotEmpty
+                                ? _countEditingController.text
+                                : '0');
+                        if (_selectedValue == '일봉') {
+                          BlocProvider.of<CandleBloc>(context)
+                              .add(SyncDayCandleEvent(market, '', count));
+                        }
+                      },
+                      child: Text(
+                        'sync',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
             /**
              * 분봉, 일봉 선택
              */
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Row(
                 children: [
                   DropdownButton(
@@ -214,7 +246,6 @@ class _SyncPage extends State<SyncPage> {
                     BlocProvider.of<CandleBloc>(context)
                         .add(LoadMinuteCandleEvent(unit, market, count));
                   }
-                  _syncPercent = 1 / count;
                 },
                 child: Text(
                   '조회',
@@ -236,8 +267,8 @@ class _SyncPage extends State<SyncPage> {
                         .map((e) => CandleDto(e.candleDateTimeKst, e.openPrice,
                             e.highPrice, e.lowPrice, e.tradePrice, e.volume))
                         .toList();
+                    _syncPercent = current.syncPercent;
                     if (current.candles.length > 0) {
-                      _syncPercent *= current.candles.length;
                       marketTitle = current.candles.first.market;
                     } else {
                       marketTitle = '...';
@@ -249,8 +280,8 @@ class _SyncPage extends State<SyncPage> {
                         .map((e) => CandleDto(e.candleDateTimeKst, e.openPrice,
                             e.highPrice, e.lowPrice, e.tradePrice, e.volume))
                         .toList();
+                    _syncPercent = current.syncPercent;
                     if (current.candles.length > 0) {
-                      _syncPercent *= current.candles.length;
                       marketTitle = current.candles.first.market;
                     } else {
                       marketTitle = '...';

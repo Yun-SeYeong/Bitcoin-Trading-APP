@@ -13,11 +13,29 @@ class CandleBloc extends Bloc<CandleEvent, CandleState> {
     on<LoadDayCandleEvent>(onLoadDayCandle);
     on<LoadMarketCodeEvent>(onLoadMarketCode);
     on<LoadMinuteCandleEvent>(onLoadMinuteCandle);
+    on<SyncDayCandleEvent>(onSyncDayCandle);
+  }
+
+  onSyncDayCandle(SyncDayCandleEvent event, Emitter<CandleState> emit) async {
+    emit(Loading());
+    int result = (await restClient.postSyncDayCandleV1(event.market, event.to, event.count))
+        .data.syncCount!;
+    emit(DayCandleSynced(result));
+    List<DayCandleDto> candles = await reqeustGetDayCandleV1(event.market, event.count);
+    double syncPercent = candles.length <= 0 ? 0 : candles.length / event.count;
+    emit(DayCandleLoaded(candles, syncPercent));
   }
 
   onLoadDayCandle(LoadDayCandleEvent event, Emitter<CandleState> emit) async {
     emit(Loading());
-    var candles = (await restClient.getDayCandleV1(event.market, event.count))
+    List<DayCandleDto> candles = await reqeustGetDayCandleV1(event.market, event.count);
+    double syncPercent = candles.length <= 0 ? 0 : candles.length / event.count;
+    print(syncPercent);
+    emit(DayCandleLoaded(candles, syncPercent));
+  }
+
+  Future<List<DayCandleDto>> reqeustGetDayCandleV1(String market, int count) async {
+    var candles = (await restClient.getDayCandleV1(market, count))
         .data
         .map((e) => DayCandleDto(
             e.market!,
@@ -28,23 +46,26 @@ class CandleBloc extends Bloc<CandleEvent, CandleState> {
             e.tradePrice!,
             e.candleAccTradeVolume!))
         .toList();
-    emit(DayCandleLoaded(candles));
+    return candles;
   }
 
-  onLoadMinuteCandle(LoadMinuteCandleEvent event, Emitter<CandleState> emit) async {
+  onLoadMinuteCandle(
+      LoadMinuteCandleEvent event, Emitter<CandleState> emit) async {
     emit(Loading());
-    var candles = (await restClient.getMinuteCandleV1(event.unit, event.market, event.count))
+    var candles = (await restClient.getMinuteCandleV1(
+            event.unit, event.market, event.count))
         .data
         .map((e) => MinuteCandleDto(
-        e.market!,
-        DateTime.parse(e.candleDateTimeKst!),
-        e.openingPrice!,
-        e.highPrice!,
-        e.lowPrice!,
-        e.tradePrice!,
-        e.candleAccTradeVolume!))
+            e.market!,
+            DateTime.parse(e.candleDateTimeKst!),
+            e.openingPrice!,
+            e.highPrice!,
+            e.lowPrice!,
+            e.tradePrice!,
+            e.candleAccTradeVolume!))
         .toList();
-    emit(MinuteCandleLoaded(candles));
+    double syncPercent = candles.length <= 0 ? 0 : candles.length / event.count;
+    emit(MinuteCandleLoaded(candles, syncPercent));
   }
 
   onLoadMarketCode(LoadMarketCodeEvent event, Emitter<CandleState> emit) async {

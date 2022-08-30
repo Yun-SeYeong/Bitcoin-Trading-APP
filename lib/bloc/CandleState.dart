@@ -1,10 +1,9 @@
-
 import 'package:bitcoin_trading_app/dto/DayCandleDto.dart';
 import 'package:bitcoin_trading_app/dto/MarketCodeDto.dart';
 import 'package:bitcoin_trading_app/dto/MinuteCandleDto.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class CandleState extends Equatable{}
+abstract class CandleState extends Equatable {}
 
 class Empty extends CandleState {
   @override
@@ -18,8 +17,9 @@ class Loading extends CandleState {
 
 class DayCandleLoaded extends CandleState {
   final List<DayCandleDto> candles;
+  final double syncPercent;
 
-  DayCandleLoaded(this.candles);
+  DayCandleLoaded(this.candles, this.syncPercent);
 
   @override
   List<Object?> get props => [];
@@ -36,10 +36,19 @@ class MarketCodeLoaded extends CandleState {
 
 class MinuteCandleLoaded extends CandleState {
   final List<MinuteCandleDto> candles;
+  final double syncPercent;
 
-  MinuteCandleLoaded(this.candles);
+  MinuteCandleLoaded(this.candles, this.syncPercent);
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
+}
 
+class DayCandleSynced extends CandleState {
+  final int count;
+
+  DayCandleSynced(this.count);
+
+  @override
+  List<Object?> get props => [];
 }
