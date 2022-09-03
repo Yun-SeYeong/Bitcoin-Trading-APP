@@ -14,6 +14,17 @@ class CandleBloc extends Bloc<CandleEvent, CandleState> {
     on<LoadMarketCodeEvent>(onLoadMarketCode);
     on<LoadMinuteCandleEvent>(onLoadMinuteCandle);
     on<SyncDayCandleEvent>(onSyncDayCandle);
+    on<SyncMinuteCandleEvent>(onSyncMinuteCandle);
+  }
+
+  onSyncMinuteCandle(SyncMinuteCandleEvent event, Emitter<CandleState> emit) async {
+    emit(Loading());
+    int result = (await restClient.postSyncMinuteCandleV1(event.unit, event.market, event.to, event.count))
+      .data.syncCount!;
+    emit(MinuteCandleSynced(result));
+    var candles = await requestGetMinuteCandleV1(event.unit, event.market, event.count);
+    double syncPercent = candles.length <= 0 ? 0 : candles.length / event.count;
+    emit(MinuteCandleLoaded(candles, syncPercent));
   }
 
   onSyncDayCandle(SyncDayCandleEvent event, Emitter<CandleState> emit) async {
@@ -52,8 +63,14 @@ class CandleBloc extends Bloc<CandleEvent, CandleState> {
   onLoadMinuteCandle(
       LoadMinuteCandleEvent event, Emitter<CandleState> emit) async {
     emit(Loading());
+    List<MinuteCandleDto> candles = await requestGetMinuteCandleV1(event.unit, event.market, event.count);
+    double syncPercent = candles.length <= 0 ? 0 : candles.length / event.count;
+    emit(MinuteCandleLoaded(candles, syncPercent));
+  }
+
+  Future<List<MinuteCandleDto>> requestGetMinuteCandleV1(int unit, String market, int count) async {
     var candles = (await restClient.getMinuteCandleV1(
-            event.unit, event.market, event.count))
+            unit, market, count))
         .data
         .map((e) => MinuteCandleDto(
             e.market!,
@@ -64,8 +81,7 @@ class CandleBloc extends Bloc<CandleEvent, CandleState> {
             e.tradePrice!,
             e.candleAccTradeVolume!))
         .toList();
-    double syncPercent = candles.length <= 0 ? 0 : candles.length / event.count;
-    emit(MinuteCandleLoaded(candles, syncPercent));
+    return candles;
   }
 
   onLoadMarketCode(LoadMarketCodeEvent event, Emitter<CandleState> emit) async {

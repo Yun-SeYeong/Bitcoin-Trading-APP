@@ -52,3 +52,12 @@ class DayCandleSynced extends CandleState {
   @override
   List<Object?> get props => [];
 }
+
+class MinuteCandleSynced extends CandleState {
+  final int count;
+
+  MinuteCandleSynced(this.count);
+
+  @override
+  List<Object?> get props => [];
+}

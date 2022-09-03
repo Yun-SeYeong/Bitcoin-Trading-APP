@@ -38,3 +38,15 @@ class SyncDayCandleEvent extends CandleEvent {
   @override
   List<Object?> get props => [];
 }
+
+class SyncMinuteCandleEvent extends CandleEvent {
+  final String market;
+  final int unit;
+  final String to;
+  final int count;
+
+  SyncMinuteCandleEvent(this.market, this.unit, this.to, this.count);
+
+  @override
+  List<Object?> get props => [];
+}

@@ -115,6 +115,9 @@ class _SyncPage extends State<SyncPage> {
                 value: _syncPercent,
               ),
             ),
+            /**
+             * Sync Button
+             */
             Visibility(
               visible: _syncPercent < 1.0,
               child: Container(
@@ -138,6 +141,9 @@ class _SyncPage extends State<SyncPage> {
                         if (_selectedValue == '일봉') {
                           BlocProvider.of<CandleBloc>(context)
                               .add(SyncDayCandleEvent(market, '', count));
+                        } else {
+                          BlocProvider.of<CandleBloc>(context)
+                              .add(SyncMinuteCandleEvent(market, unit, '', count));
                         }
                       },
                       child: Text(
