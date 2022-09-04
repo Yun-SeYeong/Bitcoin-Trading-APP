@@ -50,3 +50,10 @@ class SyncMinuteCandleEvent extends CandleEvent {
   @override
   List<Object?> get props => [];
 }
+
+class SyncMarketCodeEvent extends CandleEvent {
+  SyncMarketCodeEvent();
+
+  @override
+  List<Object?> get props => [];
+}

@@ -15,6 +15,16 @@ class CandleBloc extends Bloc<CandleEvent, CandleState> {
     on<LoadMinuteCandleEvent>(onLoadMinuteCandle);
     on<SyncDayCandleEvent>(onSyncDayCandle);
     on<SyncMinuteCandleEvent>(onSyncMinuteCandle);
+    on<SyncMarketCodeEvent>(onSyncMarketCode);
+  }
+
+  onSyncMarketCode(SyncMarketCodeEvent event, Emitter<CandleState> emit) async {
+    emit(Loading());
+    int result = (await restClient.postSyncMarketCodeV1())
+        .data.syncCount!;
+    emit(MarketCodeSynced(result));
+    var marketCodes = await (requestMarketCodeV1());
+    emit(MarketCodeLoaded(marketCodes));
   }
 
   onSyncMinuteCandle(SyncMinuteCandleEvent event, Emitter<CandleState> emit) async {
@@ -32,20 +42,20 @@ class CandleBloc extends Bloc<CandleEvent, CandleState> {
     int result = (await restClient.postSyncDayCandleV1(event.market, event.to, event.count))
         .data.syncCount!;
     emit(DayCandleSynced(result));
-    List<DayCandleDto> candles = await reqeustGetDayCandleV1(event.market, event.count);
+    List<DayCandleDto> candles = await requestGetDayCandleV1(event.market, event.count);
     double syncPercent = candles.length <= 0 ? 0 : candles.length / event.count;
     emit(DayCandleLoaded(candles, syncPercent));
   }
 
   onLoadDayCandle(LoadDayCandleEvent event, Emitter<CandleState> emit) async {
     emit(Loading());
-    List<DayCandleDto> candles = await reqeustGetDayCandleV1(event.market, event.count);
+    List<DayCandleDto> candles = await requestGetDayCandleV1(event.market, event.count);
     double syncPercent = candles.length <= 0 ? 0 : candles.length / event.count;
     print(syncPercent);
     emit(DayCandleLoaded(candles, syncPercent));
   }
 
-  Future<List<DayCandleDto>> reqeustGetDayCandleV1(String market, int count) async {
+  Future<List<DayCandleDto>> requestGetDayCandleV1(String market, int count) async {
     var candles = (await restClient.getDayCandleV1(market, count))
         .data
         .map((e) => DayCandleDto(
@@ -86,11 +96,15 @@ class CandleBloc extends Bloc<CandleEvent, CandleState> {
 
   onLoadMarketCode(LoadMarketCodeEvent event, Emitter<CandleState> emit) async {
     emit(Loading());
-    var marketCodes = (await restClient.getMarketCodeV1())
-        .data
-        .map((e) => MarketCodeDto(e.marketCode!, e.koreanName!, e.englishName!))
-        .toList();
-
+    List<MarketCodeDto> marketCodes = await requestMarketCodeV1();
     emit(MarketCodeLoaded(marketCodes));
+  }
+
+  Future<List<MarketCodeDto>> requestMarketCodeV1() async {
+    var marketCodes = (await restClient.getMarketCodeV2())
+        .data
+        .map((e) => MarketCodeDto(e.marketCode!, e.koreanName!, e.englishName!, DateTime.parse(e.createdDate!)))
+        .toList();
+    return marketCodes;
   }
 }

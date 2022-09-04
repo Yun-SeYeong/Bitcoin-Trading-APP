@@ -3,28 +3,28 @@ import 'package:json_annotation/json_annotation.dart';
 part 'ResponseGetMarketCodeDtoV1.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class ResponseMarketCodeDtoV1 {
+class ResponseGetMarketCodeDtoV1 {
 
-  List<ResponseMarketCodeDtoV1Data> data;
+  List<ResponseGetMarketCodeDtoV1Data> data;
 
-  ResponseMarketCodeDtoV1(this.data);
+  ResponseGetMarketCodeDtoV1(this.data);
 
-  factory ResponseMarketCodeDtoV1.fromJson(Map<String, dynamic> json) => _$ResponseMarketCodeDtoV1FromJson(json);
-  Map<String, dynamic> toJson() => _$ResponseMarketCodeDtoV1ToJson(this);
+  factory ResponseGetMarketCodeDtoV1.fromJson(Map<String, dynamic> json) => _$ResponseGetMarketCodeDtoV1FromJson(json);
+  Map<String, dynamic> toJson() => _$ResponseGetMarketCodeDtoV1ToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-class ResponseMarketCodeDtoV1Data {
+class ResponseGetMarketCodeDtoV1Data {
   String? marketCode;
   String? koreanName;
   String? englishName;
 
-  ResponseMarketCodeDtoV1Data({
+  ResponseGetMarketCodeDtoV1Data({
     this.marketCode,
     this.koreanName,
     this.englishName,
   });
 
-  factory ResponseMarketCodeDtoV1Data.fromJson(Map<String, dynamic> json) => _$ResponseMarketCodeDtoV1DataFromJson(json);
-  Map<String, dynamic> toJson() => _$ResponseMarketCodeDtoV1DataToJson(this);
+  factory ResponseGetMarketCodeDtoV1Data.fromJson(Map<String, dynamic> json) => _$ResponseGetMarketCodeDtoV1DataFromJson(json);
+  Map<String, dynamic> toJson() => _$ResponseGetMarketCodeDtoV1DataToJson(this);
 }

@@ -93,17 +93,47 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<ResponseMarketCodeDtoV1> getMarketCodeV1() async {
+  Future<ResponsePostSyncMarketCodeDtoV1> postSyncMarketCodeV1() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ResponseMarketCodeDtoV1>(
+        _setStreamType<ResponsePostSyncMarketCodeDtoV1>(
+            Options(method: 'POST', headers: <String, dynamic>{}, extra: _extra)
+                .compose(_dio.options, '/sync/market-code/v1',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ResponsePostSyncMarketCodeDtoV1.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ResponseGetMarketCodeDtoV1> getMarketCodeV1() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ResponseGetMarketCodeDtoV1>(
             Options(method: 'GET', headers: <String, dynamic>{}, extra: _extra)
                 .compose(_dio.options, '/candles/market-code/v1',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ResponseMarketCodeDtoV1.fromJson(_result.data!);
+    final value = ResponseGetMarketCodeDtoV1.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ResponseGetMarketCodeDtoV2> getMarketCodeV2() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ResponseGetMarketCodeDtoV2>(
+            Options(method: 'GET', headers: <String, dynamic>{}, extra: _extra)
+                .compose(_dio.options, '/candles/market-code/v2',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ResponseGetMarketCodeDtoV2.fromJson(_result.data!);
     return value;
   }
 

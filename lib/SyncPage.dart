@@ -16,7 +16,7 @@ class SyncPage extends StatefulWidget {
   _SyncPage createState() => _SyncPage();
 }
 
-class _SyncPage extends State<SyncPage> {
+class _SyncPage extends State<SyncPage> with SingleTickerProviderStateMixin {
   List<CandleDto> _candles = [];
   String marketTitle = "...";
   final _unitEditingController = TextEditingController();
@@ -28,11 +28,15 @@ class _SyncPage extends State<SyncPage> {
   String _selectedMarket = 'KRW-BTC';
   String _chartTitle = '일봉';
   double _syncPercent = 0;
+  DateTime? _marketCodeSyncDate = null;
+  late AnimationController _marketCodeSyncController;
 
   @override
   void initState() {
     BlocProvider.of<CandleBloc>(context).add(LoadDayCandleEvent("KRW-BTC", 50));
     BlocProvider.of<CandleBloc>(context).add(LoadMarketCodeEvent());
+    _marketCodeSyncController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     super.initState();
   }
 
@@ -142,8 +146,8 @@ class _SyncPage extends State<SyncPage> {
                           BlocProvider.of<CandleBloc>(context)
                               .add(SyncDayCandleEvent(market, '', count));
                         } else {
-                          BlocProvider.of<CandleBloc>(context)
-                              .add(SyncMinuteCandleEvent(market, unit, '', count));
+                          BlocProvider.of<CandleBloc>(context).add(
+                              SyncMinuteCandleEvent(market, unit, '', count));
                         }
                       },
                       child: Text(
@@ -198,6 +202,7 @@ class _SyncPage extends State<SyncPage> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   DropdownButton(
                     value: _selectedMarket,
@@ -210,6 +215,31 @@ class _SyncPage extends State<SyncPage> {
                         _selectedMarket = value ?? 'KRW-BTC';
                       });
                     },
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        _marketCodeSyncDate != null
+                            ? DateFormat('yyyy-MM-dd')
+                                .format(_marketCodeSyncDate!)
+                            : 'sync required',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      RotationTransition(
+                        turns: Tween(begin: 0.0, end: 1.0)
+                            .animate(_marketCodeSyncController),
+                        child: IconButton(
+                            onPressed: () {
+                              BlocProvider.of<CandleBloc>(context)
+                                  .add(SyncMarketCodeEvent());
+                              _marketCodeSyncController.forward(from: 0.0);
+                            },
+                            icon: Icon(
+                              Icons.sync,
+                              color: Colors.grey,
+                            )),
+                      )
+                    ],
                   ),
                 ],
               ),
@@ -296,6 +326,7 @@ class _SyncPage extends State<SyncPage> {
                 } else if (current is MarketCodeLoaded) {
                   setState(() {
                     _marketList = current.marketCodes;
+                    _marketCodeSyncDate = current.marketCodes[0].createdDate;
                   });
                 }
                 return false;

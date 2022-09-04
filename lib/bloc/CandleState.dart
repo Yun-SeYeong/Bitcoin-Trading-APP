@@ -61,3 +61,12 @@ class MinuteCandleSynced extends CandleState {
   @override
   List<Object?> get props => [];
 }
+
+class MarketCodeSynced extends CandleState {
+  final int count;
+
+  MarketCodeSynced(this.count);
+
+  @override
+  List<Object?> get props => [];
+}
