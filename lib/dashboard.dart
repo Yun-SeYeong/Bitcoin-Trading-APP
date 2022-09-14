@@ -48,16 +48,18 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             /**
-             * Analytic Page
+             * Analysis Page
              */
             Container(
               padding:
               const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(backgroundColor: Colors.black),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, "/analysispage");
+                },
                 child: Text(
-                  'Analytic Page',
+                  'Analysis Page',
                   style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),

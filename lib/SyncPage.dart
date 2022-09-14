@@ -2,7 +2,6 @@ import 'package:bitcoin_trading_app/bloc/CandleBloc.dart';
 import 'package:bitcoin_trading_app/bloc/CandleEvent.dart';
 import 'package:bitcoin_trading_app/bloc/CandleState.dart';
 import 'package:bitcoin_trading_app/dto/CandleDto.dart';
-import 'package:bitcoin_trading_app/dto/DayCandleDto.dart';
 import 'package:bitcoin_trading_app/dto/MarketCodeDto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,7 +71,8 @@ class _SyncPage extends State<SyncPage> with SingleTickerProviderStateMixin {
                 ),
                 primaryYAxis: NumericAxis(
                   numberFormat: NumberFormat.compactCurrency(symbol: ''),
-                  opposedPosition: true,
+                  anchorRangeToVisiblePoints: true,
+                  rangePadding: ChartRangePadding.additional,
                 ),
                 axes: <ChartAxis>[
                   NumericAxis(

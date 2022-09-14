@@ -6,6 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'AnalysisPage.dart';
+
 void main() {
   var dio = Dio();
   dio.options.headers["Content-Type"] = "application/json";
@@ -34,6 +36,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/dashboard': (context) => Dashboard(title: 'title'),
           '/syncpage': (context) => SyncPage(),
+          '/analysispage': (context) => AnalysisPage(),
         },
       ),
     );

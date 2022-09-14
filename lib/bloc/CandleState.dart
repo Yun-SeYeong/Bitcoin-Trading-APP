@@ -1,4 +1,5 @@
 import 'package:bitcoin_trading_app/dto/DayCandleDto.dart';
+import 'package:bitcoin_trading_app/dto/CandleMaDto.dart';
 import 'package:bitcoin_trading_app/dto/MarketCodeDto.dart';
 import 'package:bitcoin_trading_app/dto/MinuteCandleDto.dart';
 import 'package:equatable/equatable.dart';
@@ -66,6 +67,15 @@ class MarketCodeSynced extends CandleState {
   final int count;
 
   MarketCodeSynced(this.count);
+
+  @override
+  List<Object?> get props => [];
+}
+
+class DayCandleMaLoaded extends CandleState {
+  final List<CandleMaDto> mas;
+
+  DayCandleMaLoaded(this.mas);
 
   @override
   List<Object?> get props => [];

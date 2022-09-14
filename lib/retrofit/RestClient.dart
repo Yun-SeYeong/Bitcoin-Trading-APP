@@ -1,5 +1,6 @@
 
 import 'package:bitcoin_trading_app/retrofit/ResponseDto/ResponseGetDayCandleDtoV1.dart';
+import 'package:bitcoin_trading_app/retrofit/ResponseDto/ResponseGetDayCandleMaV1.dart';
 import 'package:bitcoin_trading_app/retrofit/ResponseDto/ResponseGetMarketCodeDtoV1.dart';
 import 'package:bitcoin_trading_app/retrofit/ResponseDto/ResponseGetMarketCodeDtoV2.dart';
 import 'package:bitcoin_trading_app/retrofit/ResponseDto/ResponseGetMinuteCandleDtoV1.dart';
@@ -35,4 +36,7 @@ abstract class RestClient {
 
   @GET("/candles/market-code/v2")
   Future<ResponseGetMarketCodeDtoV2> getMarketCodeV2();
+
+  @GET("/candles/day-candle/ma/v1")
+  Future<ResponseGetDayCandleMaV1> getDayCandleMaV1(@Query('market') String market, @Query('count') int count);
 }

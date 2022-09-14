@@ -57,3 +57,13 @@ class SyncMarketCodeEvent extends CandleEvent {
   @override
   List<Object?> get props => [];
 }
+
+class LoadDayCandleMaEvent extends CandleEvent {
+  final String market;
+  final int count;
+
+  LoadDayCandleMaEvent(this.market, this.count);
+
+  @override
+  List<Object?> get props => [this.market, this.count];
+}
