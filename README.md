@@ -2,15 +2,6 @@
 
 비트코인 자동 매매 앱
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img src="https://user-images.githubusercontent.com/49382751/190339313-901486d7-a41b-4802-b8f7-6794253f0c3e.png" width="30%" height="30%">
+<img src="https://user-images.githubusercontent.com/49382751/190339320-1a041666-10db-4978-803b-20ec35e38084.png" width="30%" height="30%">
+<img src="https://user-images.githubusercontent.com/49382751/190339322-ccf5b1a9-f7ba-4372-8267-543760e8dd6a.png" width="30%" height="30%">
